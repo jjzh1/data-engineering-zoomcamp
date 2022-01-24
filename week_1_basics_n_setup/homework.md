@@ -108,7 +108,12 @@ select count(*) from yellow_taxi_data where tpep_pickup_datetime::date between '
 Find the largest tip for each day. 
 On which day it was the largest tip in January?
 # Anwser
-select max(tip_amount),tpep_pickup_datetime::date from yellow_taxi_data where tpep_pickup_datetime::date between '2021-01-01' and '2021-01-31' group by tpep_pickup_datetime::date order by max(tip_amount) desc
+SELECT max(tip_amount),tpep_pickup_datetime::date 
+FROM yellow_taxi_data 
+WHERE tpep_pickup_datetime::date between '2021-01-01' and '2021-01-31' 
+GROUP BY tpep_pickup_datetime::date 
+ORDER BY max(tip_amount) DESC
+
 1140.44 "2021-01-20"
 
 
@@ -119,15 +124,36 @@ in central park on January 14?
 
 Enter the district name (not id)
 # Anwser
-select count(dolocationid) as "do", dolocationid from yellow_taxi_data where tpep_pickup_datetime::date between '2021-01-14' and '2021-01-14' and pulocationid = 43 group by dolocationid order by "do" desc 
-237,"Manhattan","Upper East Side South","Yellow Zone"
+SELECT count(t."DOLocationID"), zdo."Zone" as "DropOff"
+
+
+FROM yellow_taxi_trips t JOIN zones zpu 
+	ON t."PULocationID" = zpu."LocationID"
+	JOIN zones zdo 
+	ON t."DOLocationID" = zdo."LocationID"
+WHERE tpep_pickup_datetime::date between '2021-01-14' and '2021-01-14' and zpu."Zone" = 'Central Park'
+GROUP BY 2
+ORDER BY 1 DESC
+
+97 "Upper East Side South"
+
 ## Question 6. 
 
 What's the pickup-dropoff pair with the largest 
 average price for a ride (calculated based on `total_amount`)?
 # Anwser
-select avg(total_amount) as "average", pulocationid, dolocationid from yellow_taxi_data group by pulocationid, dolocationid order by average desc
-2292.4, 4, 265
+SELECT AVG(total_amount) as "average",
+	CONCAT(zpu."Borough", ' / ', zpu."Zone") AS "pickup_loc",
+	CONCAT(zdo."Borough", ' / ', zdo."Zone") AS "dropof_loc"
+
+FROM yellow_taxi_trips t JOIN zones zpu 
+	ON t."PULocationID" = zpu."LocationID"
+	JOIN zones zdo 
+	ON t."DOLocationID" = zdo."LocationID"
+GROUP BY "pickup_loc", "dropof_loc"
+ORDER BY "average"
+DESC
+2292.4	"Manhattan / Alphabet City"	"Unknown / "
 
 ## Submitting the solutions
 
