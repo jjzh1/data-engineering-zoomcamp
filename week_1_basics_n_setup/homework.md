@@ -8,7 +8,7 @@ and practice with terraform and SQL
 Install Google Cloud SDK. What's the version you have? 
 
 To get the version, run `gcloud --version`
-
+# Anwser
 Google Cloud SDK 369.0.0
 bq 2.0.72
 core 2022.01.14
@@ -31,6 +31,9 @@ After that, run
 * `terraform apply` 
 
 Apply the plan and copy the output to the form
+
+# Answer
+
 $ terraform apply
 var.project
   Your GCP Project ID
@@ -96,6 +99,7 @@ Download this data and put it to Postgres
 ## Question 3. Count records 
 
 How many taxi trips were there on January 15?
+# Anwser
 select count(*) from yellow_taxi_data where tpep_pickup_datetime::date between '2021-01-15' and '2021-01-15'
 53024
 
@@ -103,9 +107,10 @@ select count(*) from yellow_taxi_data where tpep_pickup_datetime::date between '
 
 Find the largest tip for each day. 
 On which day it was the largest tip in January?
+# Anwser
 select max(tip_amount),tpep_pickup_datetime::date from yellow_taxi_data where tpep_pickup_datetime::date between '2021-01-01' and '2021-01-31' group by tpep_pickup_datetime::date order by max(tip_amount) desc
 1140.44 "2021-01-20"
-(note: it's not a typo, it's "tip", not "trip")
+
 
 ## Question 5. Most popular destination
 
@@ -113,12 +118,14 @@ What was the most popular destination for passengers picked up
 in central park on January 14?
 
 Enter the district name (not id)
+# Anwser
 select count(dolocationid) as "do", dolocationid from yellow_taxi_data where tpep_pickup_datetime::date between '2021-01-14' and '2021-01-14' and pulocationid = 43 group by dolocationid order by "do" desc 
-237 -> 237,"Manhattan","Upper East Side South","Yellow Zone"
+237,"Manhattan","Upper East Side South","Yellow Zone"
 ## Question 6. 
 
 What's the pickup-dropoff pair with the largest 
 average price for a ride (calculated based on `total_amount`)?
+# Anwser
 select avg(total_amount) as "average", pulocationid, dolocationid from yellow_taxi_data group by pulocationid, dolocationid order by average desc
 2292.4, 4, 265
 
